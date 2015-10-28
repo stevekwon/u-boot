@@ -1,0 +1,7 @@
+MX6SCMFREEX BOARD
+M:	Alejandro Sierra <alejandro.sierra@freescale.com>
+S:	Maintained
+F:	board/freescale/mx6scmfreeX/
+F:	include/configs/mx6scmfreeX.h
+F:	configs/mx6scm_1gb_freeX_defconfig
+F:	configs/mx6scm_2gb_freeX_defconfig
