@@ -90,9 +90,17 @@ DECLARE_GLOBAL_DATA_PTR;
 
 int dram_init(void)
 {
+#ifdef CONFIG_INTERLEAVING_MODE
+	u32 mdmisc = readl(MMDC_P0_BASE_ADDR + 0x18);
+	gd->ram_size = imx_ddr_size() << ((mdmisc & 0x00000004)?1:0);
+#else
         gd->ram_size = imx_ddr_size();
+#endif
+
 	return 0;
 }
+
+#ifndef CONFIG_INTERLEAVING_MODE
 void dram_init_banksize(void)
 {
        gd->bd->bi_dram[0].start = PHYS_SDRAM_0;
@@ -100,7 +108,7 @@ void dram_init_banksize(void)
        gd->bd->bi_dram[1].start = PHYS_SDRAM_1;
        gd->bd->bi_dram[1].size = PHYS_SDRAM_1_SIZE;
 }
-
+#endif
 static iomux_v3_cfg_t const uart1_pads[] = {
 	MX6_PAD_CSI0_DAT10__UART1_TX_DATA | MUX_PAD_CTRL(UART_PAD_CTRL),
 	MX6_PAD_CSI0_DAT11__UART1_RX_DATA | MUX_PAD_CTRL(UART_PAD_CTRL),
