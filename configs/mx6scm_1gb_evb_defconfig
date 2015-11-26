@@ -1,4 +1,4 @@
-CONFIG_SYS_EXTRA_OPTIONS="IMX_CONFIG=board/freescale/mx6scmfreeX/imximage_scm_lpddr2.cfg,MX6Q,DDR_MB=1024,SYS_USE_SPINOR,DEFAULT_FDT_FILE=\"imx6scm-1gb-evb-ldo.dtb\""
+CONFIG_SYS_EXTRA_OPTIONS="IMX_CONFIG=board/freescale/mx6scmfreeX/imximage_scm_lpddr2.cfg,MX6Q,DDR_MB=1024,SYS_USE_SPINOR,DEFAULT_FDT_FILE=\"imx6scm-1gb-evb-ldo.dtb\",SCMEVB"
 CONFIG_ARM=y
 CONFIG_TARGET_MX6SCMFREEX=y
 CONFIG_DM=y
