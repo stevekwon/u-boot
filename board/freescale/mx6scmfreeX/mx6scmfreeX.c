@@ -38,6 +38,7 @@
 #include <asm/arch/mx6-ddr.h>
 #include <usb.h>
 
+#include <micrel.h>
 #if defined(CONFIG_MX6DL) && defined(CONFIG_MXC_EPDC)
 #include <lcd.h>
 #include <mxc_epdc_fb.h>
@@ -731,28 +732,40 @@ void epdc_power_off(void)
 	gpio_set_value(IMX_GPIO_NR(2, 20), 0);
 }
 #endif
-
 int mx6_rgmii_rework(struct phy_device *phydev)
 {
-	unsigned short val;
 
-	/* To enable AR8031 ouput a 125MHz clk from CLK_25M */
-	phy_write(phydev, MDIO_DEVAD_NONE, 0xd, 0x7);
-	phy_write(phydev, MDIO_DEVAD_NONE, 0xe, 0x8016);
-	phy_write(phydev, MDIO_DEVAD_NONE, 0xd, 0x4007);
+        /* add necessary delays for RGMII, there are no board skew delays added */
 
-	val = phy_read(phydev, MDIO_DEVAD_NONE, 0xe);
-	val &= 0xffe3;
-	val |= 0x18;
-	phy_write(phydev, MDIO_DEVAD_NONE, 0xe, val);
+        /* additional rx data delay = 0, rx clk delay = 0.3ns, total = 1.5ns *
+         * additional tx data delay = -0.42ns, tx clk delay = 0.96ns, total = 1.38ns
+         */
 
-	/* introduce tx clock delay */
-	phy_write(phydev, MDIO_DEVAD_NONE, 0x1d, 0x5);
-	val = phy_read(phydev, MDIO_DEVAD_NONE, 0x1e);
-	val |= 0x0100;
-	phy_write(phydev, MDIO_DEVAD_NONE, 0x1e, val);
+        if (ksz9031_phy_extended_write(phydev, 0x2, \
+                        MII_KSZ9031_EXT_RGMII_CTRL_SIG_SKEW, \
+                        MII_KSZ9031_MOD_DATA_NO_POST_INC, \
+                        0x0070) == 0) {
 
-	return 0;
+                if (ksz9031_phy_extended_write(phydev, 0x2, \
+                                MII_KSZ9031_EXT_RGMII_RX_DATA_SKEW, \
+                                MII_KSZ9031_MOD_DATA_NO_POST_INC, \
+                                0x7777) == 0) {
+                        if (ksz9031_phy_extended_write(phydev, 0x2, \
+                                        MII_KSZ9031_EXT_RGMII_TX_DATA_SKEW, \
+                                        MII_KSZ9031_MOD_DATA_NO_POST_INC, \
+                                        0x0000) == 0) {
+
+                                if (ksz9031_phy_extended_write(phydev, 0x2, \
+                                                MII_KSZ9031_EXT_RGMII_CLOCK_SKEW, \
+                                                MII_KSZ9031_MOD_DATA_NO_POST_INC, \
+                                                0x03f4) == 0) {
+
+                                        return 0;
+                                }
+                        }
+                }
+        }
+        return -EIO;
 }
 
 int board_phy_config(struct phy_device *phydev)

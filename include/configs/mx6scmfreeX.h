@@ -85,6 +85,12 @@
 #define CONFIG_USB_MAX_CONTROLLER_COUNT	1 /* Enabled USB controller number */
 #endif
 
+/* RGMII */
+#undef CONFIG_PHY_ATHEROS
+#undef CONFIG_FEC_MXC_PHYADDR
+#define CONFIG_PHY_MICREL
+#define CONFIG_FEC_MXC_PHYADDR          3
+
 /*#define CONFIG_SPLASH_SCREEN*/
 /*#define CONFIG_MXC_EPDC*/
 
