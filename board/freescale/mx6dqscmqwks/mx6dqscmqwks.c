@@ -1237,9 +1237,9 @@ int board_late_init(void)
 int checkboard(void)
 {
 #ifdef CONFIG_SCMEVB
-	puts("Board: MX6SCM-EVB\n");
+	puts("Board: MX6DQSCM-EVB\n");
 #else
-	puts("Board: MX6SCM-FREEDOMX\n");
+	puts("Board: MX6DQSCM-QWKS\n");
 #endif
 	return 0;
 }

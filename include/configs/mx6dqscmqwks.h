@@ -6,8 +6,8 @@
  * SPDX-License-Identifier:	GPL-2.0+
  */
 
-#ifndef __MX6SCMFREEX_CONFIG_H
-#define __MX6SCMFREEX_CONFIG_H
+#ifndef __MX6SCMQSB_CONFIG_H
+#define __MX6SCMQSB_CONFIG_H
 
 #include <asm/arch/imx-regs.h>
 #include <asm/imx-common/gpio.h>
