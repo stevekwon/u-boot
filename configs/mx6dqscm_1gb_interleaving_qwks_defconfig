@@ -1,4 +1,4 @@
-CONFIG_SYS_EXTRA_OPTIONS="IMX_CONFIG=board/freescale/mx6dqscmqwks/imximage_scm_lpddr2.cfg,MX6Q,DDR_MB=1024,SYS_USE_SPINOR,DEFAULT_FDT_FILE=\"imx6dqscm-1gb-qwks-rev1-ldo.dtb\",INTERLEAVING_MODE"
+CONFIG_SYS_EXTRA_OPTIONS="IMX_CONFIG=board/freescale/mx6dqscmqwks/imximage_scm_lpddr2.cfg,MX6Q,DDR_MB=1024,SYS_USE_SPINOR,DEFAULT_FDT_FILE=\"imx6dqscm-1gb-qwks-rev2-ldo.dtb\",INTERLEAVING_MODE"
 CONFIG_ARM=y
 CONFIG_TARGET_MX6DQSCMQWKS=y
 CONFIG_DM=y
