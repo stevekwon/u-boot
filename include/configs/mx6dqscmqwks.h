@@ -37,12 +37,21 @@
 #ifndef CONFIG_INTERLEAVING_MODE
 #undef CONFIG_NR_DRAM_BANKS
 #define CONFIG_NR_DRAM_BANKS            2
+#ifdef CONFIG_SCM_LPDDR2_2GB
+#define PHYS_SDRAM_0            MMDC0_ARB_BASE_ADDR     /* SDRAM Bank #1 */
+#define PHYS_SDRAM_1            MMDC1_ARB_BASE_ADDR     /* SDRAM Bank #2 */
+
+#define PHYS_SDRAM_0_SIZE       (1024 * 1024 * 1024)      /* 1024MB */
+#define PHYS_SDRAM_1_SIZE       (1024 * 1024 * 1024)      /* 1024MB */
+
+#else
 
 #define PHYS_SDRAM_0            MMDC0_ARB_BASE_ADDR     /* SDRAM Bank #1 */
 #define PHYS_SDRAM_1            MMDC1_ARB_BASE_ADDR     /* SDRAM Bank #2 */
 
 #define PHYS_SDRAM_0_SIZE       (512 * 1024 * 1024)      /* 512MB */
 #define PHYS_SDRAM_1_SIZE       (512 * 1024 * 1024)      /* 512MB */
+#endif
 #endif
 /*
  * imx6 q/dl/solo pcie would be failed to work properly in kernel, if
