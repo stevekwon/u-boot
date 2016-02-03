@@ -85,7 +85,11 @@ DECLARE_GLOBAL_DATA_PTR;
 
 #define I2C_PAD MUX_PAD_CTRL(I2C_PAD_CTRL)
 
+#ifdef CONFIG_SCMEVB
 #define DISP0_PWR_EN	IMX_GPIO_NR(1, 21)
+#else
+#define DISP0_PWR_EN    IMX_GPIO_NR(1, 18)
+#endif
 #define EPDC_PAD_CTRL    (PAD_CTL_PKE | PAD_CTL_SPEED_MED |	\
 	PAD_CTL_DSE_40ohm | PAD_CTL_HYS)
 
@@ -275,6 +279,10 @@ iomux_v3_cfg_t const di0_pads[] = {
 	MX6_PAD_DI0_DISP_CLK__IPU1_DI0_DISP_CLK,	/* DISP0_CLK */
 	MX6_PAD_DI0_PIN2__IPU1_DI0_PIN02,		/* DISP0_HSYNC */
 	MX6_PAD_DI0_PIN3__IPU1_DI0_PIN03,		/* DISP0_VSYNC */
+};
+
+iomux_v3_cfg_t const lvds_pwr_en_pads[] = {
+	MX6_PAD_SD1_CMD__GPIO1_IO18 | MUX_PAD_CTRL(NO_PAD_CTRL),
 };
 
 #if defined(CONFIG_MX6DL) && defined(CONFIG_MXC_EPDC)
@@ -789,6 +797,9 @@ static void disable_lvds(struct display_info_t const *dev)
 		 IOMUXC_GPR2_LVDS_CH1_MODE_MASK);
 
 	writel(reg, &iomux->gpr[2]);
+#ifndef CONFIG_SCMEVB
+	gpio_direction_output(DISP0_PWR_EN, 0);
+#endif
 }
 
 static void do_enable_hdmi(struct display_info_t const *dev)
@@ -805,6 +816,9 @@ static void enable_lvds(struct display_info_t const *dev)
 	reg |= IOMUXC_GPR2_DATA_WIDTH_CH0_18BIT |
 	       IOMUXC_GPR2_DATA_WIDTH_CH1_18BIT;
 	writel(reg, &iomux->gpr[2]);
+#ifndef CONFIG_SCMEVB
+	gpio_direction_output(DISP0_PWR_EN, 1);
+#endif
 }
 
 struct display_info_t const displays[] = {{
@@ -923,6 +937,9 @@ static void setup_display(void)
 	    | (IOMUXC_GPR3_MUX_SRC_IPU1_DI0
 	       << IOMUXC_GPR3_LVDS1_MUX_CTL_OFFSET);
 	writel(reg, &iomux->gpr[3]);
+#ifndef CONFIG_SCMEVB
+	imx_iomux_v3_setup_multiple_pads(lvds_pwr_en_pads, ARRAY_SIZE(lvds_pwr_en_pads));
+#endif
 }
 #endif /* CONFIG_VIDEO_IPUV3 */
 
