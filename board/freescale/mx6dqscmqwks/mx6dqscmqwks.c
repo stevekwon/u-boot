@@ -114,10 +114,17 @@ void dram_init_banksize(void)
        gd->bd->bi_dram[1].size = PHYS_SDRAM_1_SIZE;
 }
 #endif
-static iomux_v3_cfg_t const uart1_pads[] = {
+#ifdef CONFIG_SCMHVB
+iomux_v3_cfg_t const uart_pads[] = {
+	MX6_PAD_KEY_COL0__UART4_TX_DATA | MUX_PAD_CTRL(UART_PAD_CTRL),
+	MX6_PAD_KEY_ROW0__UART4_RX_DATA | MUX_PAD_CTRL(UART_PAD_CTRL),
+};
+#else
+static iomux_v3_cfg_t const uart_pads[] = {
 	MX6_PAD_CSI0_DAT10__UART1_TX_DATA | MUX_PAD_CTRL(UART_PAD_CTRL),
 	MX6_PAD_CSI0_DAT11__UART1_RX_DATA | MUX_PAD_CTRL(UART_PAD_CTRL),
 };
+#endif
 
 static iomux_v3_cfg_t const enet_pads[] = {
 	MX6_PAD_ENET_MDIO__ENET_MDIO		| MUX_PAD_CTRL(ENET_PAD_CTRL),
@@ -335,7 +342,7 @@ static iomux_v3_cfg_t const epdc_disable_pads[] = {
 
 static void setup_iomux_uart(void)
 {
-	imx_iomux_v3_setup_multiple_pads(uart1_pads, ARRAY_SIZE(uart1_pads));
+	imx_iomux_v3_setup_multiple_pads(uart_pads, ARRAY_SIZE(uart_pads));
 }
 
 #ifdef CONFIG_FSL_ESDHC
@@ -391,7 +398,11 @@ int board_mmc_getcd(struct mmc *mmc)
 		ret = !gpio_get_value(USDHC2_CD_GPIO);
 		break;
 	case USDHC3_BASE_ADDR:
+#ifdef CONFIG_SCMHVB
+		ret = 1;
+#else
 		ret = !gpio_get_value(USDHC3_CD_GPIO);
+#endif
 		break;
 	case USDHC4_BASE_ADDR:
 		ret = 1; /* eMMC/uSDHC4 is always present */
@@ -1253,7 +1264,9 @@ int board_late_init(void)
 
 int checkboard(void)
 {
-#ifdef CONFIG_SCMEVB
+#ifdef CONFIG_SCMHVB
+	puts("Board: MX6DQSCM-HVB\n");
+#elif CONFIG_SCMEVB
 	puts("Board: MX6DQSCM-EVB\n");
 #else
 	puts("Board: MX6DQSCM-QWKS\n");
