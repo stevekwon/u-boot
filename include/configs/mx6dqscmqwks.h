@@ -27,7 +27,12 @@
 #endif
 #define CONFIG_MMCROOT			"/dev/mmcblk2p2"  /* SDHC3 */
 #define CONFIG_DMFC				"dmfc=3"
-#define PHYS_SDRAM_SIZE		(1u * 1024 * 1024 * 1024)
+
+#ifdef CONFIG_SCM_LPDDR2_512MB
+#define PHYS_SDRAM_SIZE         (512 * 1024 * 1024)
+#else
+#define PHYS_SDRAM_SIZE         (1u * 1024 * 1024 * 1024)
+#endif
 
 #include "mx6sabre_common.h"
 
@@ -40,7 +45,7 @@
 #endif
 
 /* Physical Memory Map */
-#ifndef CONFIG_INTERLEAVING_MODE
+#if !defined(CONFIG_INTERLEAVING_MODE) && !defined(CONFIG_SCM_LPDDR2_512MB)
 #undef CONFIG_NR_DRAM_BANKS
 #define CONFIG_NR_DRAM_BANKS            2
 #ifdef CONFIG_SCM_LPDDR2_2GB

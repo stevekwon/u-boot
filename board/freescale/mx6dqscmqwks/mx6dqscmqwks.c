@@ -105,7 +105,7 @@ int dram_init(void)
 	return 0;
 }
 
-#ifndef CONFIG_INTERLEAVING_MODE
+#if !defined(CONFIG_INTERLEAVING_MODE) && !defined(CONFIG_SCM_LPDDR2_512MB)
 void dram_init_banksize(void)
 {
        gd->bd->bi_dram[0].start = PHYS_SDRAM_0;
